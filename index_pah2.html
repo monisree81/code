@@ -1,0 +1,51 @@
+<!-- write you code here --> 
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Document</title> 
+    <link rel="stylesheet" 
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.css"> 
+    <link rel="stylesheet" href="./style.css"> 
+</head> 
+<body> 
+    <h1>Live TextArea Editor</h1> 
+ 
+    <div class="headerGrp"> 
+    <div class="grp"> 
+    <label for="fontSizeSelect">Font Size</label> 
+    <select id="fontSizeSelect" class="form-select"> 
+        <option value="12px">12px</option> 
+        <option value="16px">16px</option> 
+        <option value="20px">20px</option> 
+    </select> 
+    </div> 
+ 
+ 
+    <div class="grp"> 
+    <label for="fontColorSelect">Font Color</label> 
+    <select id="fontColorSelect" class="form-select"> 
+        <option value="black">Black</option> 
+        <option value="blue">Blue</option> 
+        <option value="red">Red</option> 
+    </select> 
+    </div> 
+ 
+    <div class="btn-group"> 
+          
+       <button id="boldBtn" class="btn btn-outline-dark" data-bs-toggle="button"> 
+        Bold 
+       </button> 
+       <button id="italicBtn" class="btn btn-outline-dark" data-bs-toggle="button"> 
+        Italic 
+       </button> 
+<button class="btn btn-outline-secondary" id="resetBtn">Reset</button> 
+</div> 
+</div>  
+<textarea id="editor" placeholder="Type something here..."></textarea> 
+<script src="./script.js"></script> 
+<script 
+src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script> 
+</body> 
+</html>
