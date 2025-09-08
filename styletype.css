@@ -1,9 +1,12 @@
-.maindiv{ 
-display: flex; 
-align-items: center; 
-justify-content: center; 
-flex-direction: column; 
-} 
-.highlight{ 
-background-color: yellow; 
-} 
+.maindiv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 100vh; /* keeps it centered nicely */
+  gap: 1rem; /* adds spacing between paragraph and button */
+}
+
+.highlight {
+  background-color: yellow; /* required for tests */
+}
