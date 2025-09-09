@@ -1,58 +1,65 @@
-// Canvas Setup
+// Get canvas and context
 const canvas = document.getElementById("sketchPad");
 const ctx = canvas.getContext("2d");
 
-// Buttons
+// Get color buttons
 const redBtn = document.getElementById("redBtn");
 const blueBtn = document.getElementById("blueBtn");
 const greenBtn = document.getElementById("greenBtn");
 const eraserBtn = document.getElementById("eraserBtn");
+const blackBtn = document.getElementById("blackBtn");
 const clearBtn = document.getElementById("clearBtn");
-const currentColorDisplay = document.getElementById("currentColorDisplay");
 
-// Initial Drawing Settings
+// Track drawing state and color
 let drawing = false;
-let currentColor = "black";
-ctx.strokeStyle = currentColor;
-ctx.lineWidth = 3;
-ctx.lineCap = "round";
+let currentColorDisplay = "black";
 
-// Helper: Update Current Color
-function setColor(color) {
-  currentColor = color;
-  ctx.strokeStyle = currentColor;
-  currentColorDisplay.textContent = color.charAt(0).toUpperCase() + color.slice(1);
-}
+// Show current color
+const currentColor = document.getElementById("currentColor");
 
-// Drawing Functions
-let lastX, lastY;
+const setColor = (color) => {
+  currentColorDisplay = color;
+  if (color === "white") {
+    currentColor.textContent = "White (Eraser)";
+  } else {
+    currentColor.textContent =
+      color.charAt(0).toUpperCase() + color.slice(1).toLowerCase();
+  }
+};
 
-canvas.addEventListener("mousedown", (e) => {
-  drawing = true;
-  [lastX, lastY] = [e.offsetX, e.offsetY];
-});
-
-canvas.addEventListener("mousemove", (e) => {
-  if (!drawing) return;
-
-  ctx.beginPath();
-  ctx.moveTo(lastX, lastY);
-  ctx.lineTo(e.offsetX, e.offsetY);
-  ctx.stroke();
-  [lastX, lastY] = [e.offsetX, e.offsetY];
-});
-
-canvas.addEventListener("mouseup", () => (drawing = false));
-canvas.addEventListener("mouseout", () => (drawing = false));
-
-// Color Buttons Events
+// Button events
+blackBtn.addEventListener("click", () => setColor("black"));
 redBtn.addEventListener("click", () => setColor("red"));
 blueBtn.addEventListener("click", () => setColor("blue"));
 greenBtn.addEventListener("click", () => setColor("green"));
 eraserBtn.addEventListener("click", () => setColor("white"));
 
-// Clear Canvas
 clearBtn.addEventListener("click", () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  setColor("black"); // Reset to black
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+});
+
+// Drawing events
+canvas.addEventListener("mousedown", (e) => {
+  drawing = true;
+  ctx.beginPath();
+  ctx.moveTo(e.offsetX, e.offsetY);
+});
+
+canvas.addEventListener("mousemove", (e) => {
+  if (drawing) {
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.strokeStyle = currentColorDisplay;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+});
+
+canvas.addEventListener("mouseup", () => {
+  drawing = false;
+});
+
+canvas.addEventListener("mouseleave", () => {
+  drawing = false;
 });
