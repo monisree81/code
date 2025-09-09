@@ -5,10 +5,20 @@ const blueBtn = document.getElementById("blueBtn");
 const eraserBtn = document.getElementById("eraserBtn");
 const greenBtn = document.getElementById("greenBtn");
 const blackBtn = document.getElementById("blackBtn");
+const clearBtn=document.getElementById("clearBtn");
 let drawing = false;
 let currentColorDisplay = "black";
 const currentColor = document.getElementById("currentColor");
 
+
+const getMousePos=(canvas,evt)=>{
+  const rect=canvas.getBoundingClientRect();
+  return{
+    x: evt.clientX - rect.left,
+    y: evt.clientY - rect.top
+
+  };
+}
 const setColor = (color) => {
   ctx.globalCompositeOperation = "source-over"; // reset drawing mode
   currentColorDisplay = color;
@@ -25,14 +35,16 @@ blueBtn.addEventListener("click", () => setColor("blue"));
 greenBtn.addEventListener("click", () => setColor("green"));
 
 eraserBtn.addEventListener("click", () => {
-  ctx.globalCompositeOperation = "destination-out"; // true erase
+  ctx.globalCompositeOperation = "source-over";
+  currentColorDisplay="white"; // true erase
   currentColor.textContent = "Eraser";
 });
-
-document.getElementById("clearBtn").addEventListener("click", () => {
+clearBtn.addEventListener("click", () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const prevFill=ctx.fillStyle;
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle=prevFill;
 });
 
 // set initial background
@@ -44,13 +56,17 @@ setColor("black");
 
 canvas.addEventListener("mousedown", (e) => {
   drawing = true;
+  const pos=getMousePos(canvas,e);
   ctx.beginPath();
-  ctx.moveTo(e.offsetX, e.offsetY);
+  ctx.strokeStyle = currentColorDisplay;
+    ctx.lineWidth = 2;
+  ctx.moveTo(pos.x, pos.y);
 });
 
 canvas.addEventListener("mousemove", (e) => {
   if (drawing) {
-    ctx.lineTo(e.offsetX, e.offsetY);
+    const pos=getMousePos(canvas,e);
+    ctx.lineTo(pos.x, pos.y);
     ctx.strokeStyle = currentColorDisplay;
     ctx.lineWidth = 2;
     ctx.stroke();
