@@ -1,46 +1,47 @@
-// Get canvas and context
 const canvas = document.getElementById("sketchPad");
 const ctx = canvas.getContext("2d");
-
-// Get color buttons
 const redBtn = document.getElementById("redBtn");
 const blueBtn = document.getElementById("blueBtn");
-const greenBtn = document.getElementById("greenBtn");
 const eraserBtn = document.getElementById("eraserBtn");
+const greenBtn = document.getElementById("greenBtn");
 const blackBtn = document.getElementById("blackBtn");
-const clearBtn = document.getElementById("clearBtn");
-
-// Track drawing state and color
 let drawing = false;
 let currentColorDisplay = "black";
-
-// Show current color
 const currentColor = document.getElementById("currentColor");
 
 const setColor = (color) => {
+  ctx.globalCompositeOperation = "source-over"; // reset drawing mode
   currentColorDisplay = color;
   if (color === "white") {
     currentColor.textContent = "White (Eraser)";
   } else {
-    currentColor.textContent =
-      color.charAt(0).toUpperCase() + color.slice(1).toLowerCase();
+    currentColor.textContent = (color.charAt(0).toUpperCase() + color.slice(1)).trim();
   }
 };
 
-// Button events
 blackBtn.addEventListener("click", () => setColor("black"));
 redBtn.addEventListener("click", () => setColor("red"));
 blueBtn.addEventListener("click", () => setColor("blue"));
 greenBtn.addEventListener("click", () => setColor("green"));
-eraserBtn.addEventListener("click", () => setColor("white"));
 
-clearBtn.addEventListener("click", () => {
+eraserBtn.addEventListener("click", () => {
+  ctx.globalCompositeOperation = "destination-out"; // true erase
+  currentColor.textContent = "Eraser";
+});
+
+document.getElementById("clearBtn").addEventListener("click", () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 });
 
-// Drawing events
+// set initial background
+ctx.fillStyle = "#ffffff";
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+// set initial color
+setColor("black");
+
 canvas.addEventListener("mousedown", (e) => {
   drawing = true;
   ctx.beginPath();
