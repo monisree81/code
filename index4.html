@@ -1,0 +1,161 @@
+Type the code week-4
+
+HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Building Material Inventory Management System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <form>
+    <h3>Building Material Inventory</h3>
+
+    <label for="materialName">Material Name:</label><br>
+    <input type="text" id="materialName" placeholder="Enter material name"><br>
+
+    <label for="category">Material Category:</label><br>
+    <select id="category"><br>
+      <option value="Wood">Wood</option>
+      <option value="Cement">Cement</option>
+      <option value="Steel">Steel</option>
+      <option value="Bricks">Bricks</option>
+      <option value="Glass">Glass</option>
+    </select>
+    <br>
+    <label for="quantity">Quantity:</label><br>
+    <input type="number" id="quantity" placeholder="Enter quantity"><br>
+    <label for="supplierName">Supplier Name:</label><br>
+    <input type="text" id="supplierName" placeholder="Enter supplier name">
+    <br>
+    <label for="costPerUnit">Cost Per Unit:</label><br>
+    <input type="number" id="costPerUnit" placeholder="Enter cost per unit">
+    <br>
+    
+    <button id="addMaterialBtn" type="button">Submit Material</button> <br>
+    <span id="error-message"></span>
+    <label for="materialTable">Material List:</label>
+    <table id="materialTable" >
+      <thead>
+        <tr>
+          <th>Material Name</th>
+          <th>Category</th>
+          <th>Quantity</th>
+          <th>Supplier</th>
+          <th>Cost Per Unit</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div>
+      <h3>Inventory Summary</h3>
+      <h3>Total products: <span id="totalProducts">0</span></h3>
+      <h3>Most Expensive Product: <span id="mostExpensive">None</span></h3>
+    </div>
+
+  </form>
+</body>
+<script src="script.js"></script>
+</html>
+
+CSS
+body{
+    background-color:rgb(237, 237, 237);
+}
+form{
+    padding:10px;
+    width:500px;
+    margin:auto;
+    margin-top:100px;
+    background-color: rgb(249, 249, 249);
+    border-radius: 5px;
+}
+form h3{
+    text-align: center;
+}
+label{
+    display:inline-block;
+    margin-top:10px;
+    font-weight: bold;
+}
+input,select{
+    width:95%;
+    margin:5px;
+    border:1px solid rgb(237, 236, 236);
+    padding:5px
+}
+
+
+
+#addMaterialBtn{
+    background-color: rgb(76,175,80);
+    width:100%;
+    margin-top:10px;
+    padding:5px;
+}
+table{
+    width:100%;
+}
+th{
+    background-color:rgb(63, 240, 63);
+    padding:10px;
+}
+td{
+    background-color:white;
+    padding:10px
+}
+
+JS
+
+let totproducts=0;
+let meprice=0 ;
+let meproduct="";
+
+
+
+document.getElementById("addMaterialBtn").addEventListener("click",function(){
+    const matname=document.getElementById("materialName").value.trim();
+    const matcat=document.getElementById("category").value;
+    const quantity=document.getElementById("quantity").value.trim();
+    const supname=document.getElementById("supplierName").value.trim();
+    const cpu=document.getElementById("costPerUnit").value.trim();
+    const errmsg = document.getElementById("error-message");
+    
+    
+    if(!matname || !matcat || !quantity || ! supname || !cpu){
+        errmsg.textContent="Please fill out all fields!";
+        return;
+    }
+
+    const tableBody=document.querySelector("#materialTable tbody");
+    const row=document.createElement("tr");
+    row.innerHTML=`
+    <td>${matname}</td>
+    <td>${matcat}</td>
+    <td>${quantity}</td>
+    <td>${supname}</td>
+    <td>${cpu}</td>`;
+    tableBody.appendChild(row);
+
+    totproducts=totproducts+1;
+    if(cpu>meprice){
+        meprice=cpu;
+        meproduct=matname;
+    }
+
+    const totalproducts=document.getElementById("totalProducts").textContent=totproducts;
+    const MEP=document.getElementById("mostExpensive").textContent=meproduct;
+
+
+    //clear inputs
+    document.getElementById("materialName").value="";
+    document.getElementById("category").value="";
+    document.getElementById("quantity").value="";
+    document.getElementById("supplierName").value="";
+    document.getElementById("costPerUnit").value="";
+
+})
