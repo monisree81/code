@@ -1,0 +1,105 @@
+//customerController.js
+const Customer=require("../models/customerModel.js");
+const createCustomer=async(req,res,next)=>{
+try{
+const {name,email,phone,isActive}=req.body;
+if(!name || !email|| !phone){
+res.status(404).json({message:'Name, email, and phone are
+required'});
+return;
+}
+const newCustomer=new Customer({
+name,email,phone,isActive
+});
+const saved=await newCustomer.save();
+res.status(201).json(saved);
+}
+catch(err){
+next(err);
+}
+}
+
+const getAllCustomers=async(req,res,next)=>{
+try{
+const c_data=await Customer.find();
+res.status(200).json(c_data);
+}
+catch(err){
+next(err);
+}
+}
+
+const updateCustomer=async(req,res,next)=>{
+try{
+const {id}=req.params.id;
+const {name, email, phone}=req.body;
+if(!name || !email|| !phone){
+res.status(404).json({message:'Name, email, and phone are
+required to update the customer'});
+return;
+}
+const u_data=await Customer.findByIdAndUpdate(req.params.id,
+req.body,{new:true});
+if(u_data){
+res.status(200).json(u_data);
+return;
+}
+res.status(404).json({message:"Customer not found"});
+}
+catch(err){
+next(err);
+}
+}
+module.exports={createCustomer,getAllCustomers,updateCustomer};
+
+//errorHandler.js
+const errorHandler=(err,req,res,next)=>{
+console.log(err.stack);
+const statusCode=res.statusCode!==200?res.statusCode:500;
+res.status(statusCode).json({error:{
+message:err.message,stack:err.stack
+}});
+}
+module.exports=errorHandler;
+
+//customerModel.js
+const mongoose=require("mongoose");
+
+const customer_schema=new mongoose.Schema({
+name:{type:String,required:true},
+email:{type:String,required:true},
+phone:{type:String,required:true},
+isActive:{type:Boolean,default:true},
+
+});
+const Customer=mongoose.model("Customer",customer_schema)
+module.exports=Customer;
+
+//customerRoutes.js
+const express=require("express");
+const router=express.Router();
+const{createCustomer,getAllCustomers,updateCustomer}=require("../controlle
+rs/customerController.js");
+router.post("/",createCustomer);
+router.get("/",getAllCustomers);
+router.put("/:id",updateCustomer);
+module.exports=router;
+
+//index.js
+const express=require("express");
+const router=require("./routers/customerRoutes.js");
+const mongoose = require("mongoose");
+const errorHandler = require("./middlewares/errorHandler.js");
+
+const app=express();
+app.use(express.json());
+mongoose.connect("mongodb://127.0.0.1:27017/customersDB",{
+useNewUrlParser:true,useUnifiedTopology:true
+})
+.then(()=>{console.log("connected")})
+.catch((err)=>{console.log("Not connected "+err.message)});
+app.use("/customers",router);
+app.use(errorHandler);
+app.listen(8080,()=>{
+console.log("server started at port 8080");
+})
