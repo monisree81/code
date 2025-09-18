@@ -1,0 +1,116 @@
+const Movie=require("../models/movieModel.js");
+const createMovie=async(req,res)=>{
+try{
+const {title,director,releaseYear,genre}=req.body;
+const newMovie=new Movie({title,director,releaseYear,genre});
+const saved=await newMovie.save();
+res.status(201).json(saved);
+}
+catch(err){
+res.status(500).json({message:err.message});
+}
+}
+const getAllMovies=async(req,res)=>{
+try{
+const movies=await Movie.find();
+res.status(200).json(movies);
+}
+
+catch(err){
+res.status(500).json({message:err.message});
+}
+}
+const getMovieById=async(req,res)=>{
+try{
+const movieId=await Movie.findById(req.params.id);
+if(movieId){
+res.status(200).json(movieId);
+return;
+
+}
+res.status(404).json({message:"Movie not found"});
+}
+catch(err){
+res.status(500).json({message:err.message});
+}
+}
+const updateMovie=async(req,res)=>{
+try{
+const updated_data=await Movie.findByIdAndUpdate(req.params.id,
+req.body,{new:true,runValidators:true});
+if(updated_data){
+res.status(200).json(updated_data);
+return;
+}
+res.status(404).json({message:"Movie not found"});
+}
+catch(err){
+res.status(500).json({message:err.message});
+}
+}
+
+const deleteMovie=async(req,res)=>{
+try{
+const del_data=await Movie.findByIdAndDelete(req.params.id);
+if(del_data){
+res.status(200).json({message:"Movie deleted successfully"});
+return;
+}
+res.status(404).json({message:"Movie not found"});
+}
+
+catch(err){
+res.status(500).json({message:err.message});
+}
+}
+module.exports={createMovie,getAllMovies,getMovieById,updateMovie,deleteMo
+vie};
+
+//movieModel.js
+const mongoose=require("mongoose");
+const movie_schema=new mongoose.Schema({
+title:{type:String,
+required:true},
+
+director:{type:String,
+required:true},
+
+releaseYear:{type:Number,
+required:true
+},
+
+genre:{type:String,
+required:true
+}
+});
+const Movie=mongoose.model("Movie",movie_schema);
+module.exports=Movie;
+
+//movieRoutes.js
+const express=require("express");
+const{createMovie,getAllMovies,getMovieById,updateMovie,deleteMovie}=requi
+re("../controllers/movieController.js");
+const router=express.Router();
+router.post("/",createMovie);
+router.get("/",getAllMovies);
+router.get("/:id",getMovieById);
+router.put("/:id",updateMovie);
+router.delete("/:id",deleteMovie);
+module.exports=router
+
+//index.js
+const express=require("express");
+const mongoose =require("mongoose");
+const app=express();
+const router=require("./routers/movieRoutes.js");
+app.use(express.json());
+const uri="mongodb://127.0.0.1:27017/movieDB";
+mongoose.connect(uri,{
+useNewUrlParser:true,useUnifiedTopology:true
+})
+.then(()=>{console.log("Connected")})
+.catch((err)=>{console.log("Not Connected")});
+app.use("/movies",router);
+app.listen(8080,()=>{
+console.log("Server started at port 8080");
+})
