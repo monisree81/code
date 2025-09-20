@@ -1,0 +1,82 @@
+//productController.js
+const Product=require("../models/productModel.js");
+const createProduct=async(req,res,next)=>{
+try{
+const {name,price,category}=req.body;
+const newproduct=new Product({name,price,category});
+const saved=await newproduct.save();
+res.status(201).json(saved);}
+catch(err){
+next(err);
+}
+
+}
+const getAllProducts=async(req,res,next)=>{
+try{
+const products=await Product.find();
+res.status(200).json(products);
+}
+catch(err){
+next(err);
+}
+
+}
+module.exports={createProduct,getAllProducts};
+
+//errorHandler.js
+const errorHandler=(err,req,res,next)=>{
+console.log(err.stack);
+const statusCode=res.statusCode!==200? res.statusCode:500;
+res.status(500).json({error:{message:err.message,stack:err.stack}})
+}
+module.exports=errorHandler;
+
+//productRoutes.js
+const express=require("express");
+const
+{createProduct,getAllProducts}=require("../controllers/productController.j
+s")
+const router=express.Router();
+router.post("/",createProduct);
+router.get("/",getAllProducts);
+module.exports=router;
+
+//index.js
+const express=require("express");
+const mongoose=require("mongoose");
+const errorHandler=require("./middlewares/errorHandler.js");
+const productRoutes=require("./routers/productRoutes.js");
+const app=express();
+app.use(express.json());
+mongoose.connect("mongodb://127.0.0.1:27017/productDB",{
+useNewUrlParser:true,
+useUnifiedTopology:true
+});
+app.use("/products",productRoutes);
+app.use(errorHandler);
+
+app.listen(8080,()=>{
+console.log("server started at port 8080");
+})
+
+//productModel.js
+const mongoose=require("mongoose");
+const product_schema=new mongoose.Schema({
+name:{
+type:String,
+required:true
+},
+price:{
+type:Number,
+required:true
+},
+category:{
+type:String,
+required:true
+},
+inStock:{
+default:false
+}
+})
+const Product=mongoose.model("Product",product_schema);
+module.exports=Product;
