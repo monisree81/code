@@ -1,0 +1,101 @@
+ import React, { useState } from 'react';
+ import 'bootstrap/dist/css/bootstrap.min.css';
+ const initialOrders = [
+  { id: 1, item: 'Burger', quantity: 2, price: 150 },
+  { id: 2, item: 'Pizza', quantity: 1, price: 300 },
+  { id: 3, item: 'Pasta', quantity: 3, price: 200 },
+ ];
+ export default function FoodOrder() {
+  const [orders, setOrders] = useState(initialOrders);
+  const [newOrder, setNewOrder] = useState({ item: '', quantity: '', price: 
+'' });
+  const handleNewOrderChange = (e) => {
+    const { name, value } = e.target;
+    setNewOrder((prev) => ({ ...prev, [name]: value }));
+  };
+  const handleAddOrder = () => {
+    const { item, quantity, price } = newOrder;
+    if (item.trim() === '' || quantity === '' || price === '') {
+      alert('Please fill in all fields');
+      return;
+    }
+    const nextId = orders.length === 0 ? 1 : Math.max(...orders.map((o) => 
+o.id)) + 1;
+    const toAdd = {
+      id: nextId,
+      item: item.trim(),
+      quantity: Number(quantity),
+      price: Number(price),
+    };
+    setOrders((prev) => [...prev, toAdd]);
+    setNewOrder({ item: '', quantity: '', price: '' });
+  };
+  return (
+    <div className="container my-4">
+      <h1 className="text-primary text-center mb-4">Food Order Management</h1>
+      <div className="table-responsive">
+        <table className="table table-striped table-bordered" role="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Food Item</th>
+              <th>Quantity</th>
+              <th>Price ($)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders.map((o) => (
+              <tr key={o.id}>
+                <td>{o.id}</td>
+                <td>{o.item}</td>
+                <td>{o.quantity}</td>
+                <td>{o.price}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <h2 className="text-success text-center mt-5 mb-3">Add New Food Order</h2>
+      <div className="row g-3">
+        <div className="col-md-5">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Food Item"
+            name="item"
+            value={newOrder.item}
+            onChange={handleNewOrderChange}
+          />
+        </div>
+        <div className="col-md-3">
+          <input
+            type="number"
+            className="form-control"
+            placeholder="Quantity"
+            name="quantity"
+            value={newOrder.quantity}
+            onChange={handleNewOrderChange}
+            min="0"
+          />
+        </div>
+        <div className="col-md-2">
+          <input
+            type="number"
+            className="form-control"
+            placeholder="Price ($)"
+            name="price"
+            value={newOrder.price}
+            onChange={handleNewOrderChange}
+            step="0.01"
+            min="0"
+          />
+        </div>
+        <div className="col-md-2 d-grid">
+          <button className="btn btn-success w-100" onClick={handleAddOrder}>
+            Add Order
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+ }
