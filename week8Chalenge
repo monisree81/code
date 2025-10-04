@@ -1,0 +1,71 @@
+// src/App.js
+
+import React from 'react';
+import CropDashboard from './Components/CropDashboard';
+import './App.css';
+const initialCrops = [
+  { name: 'Tomato', type: 'Vegetables', status: 'Growing' },
+  { name: 'Apple', type: 'Fruits', status: 'Planted' },
+  { name: 'Wheat', type: 'Grains', status: 'Harvested' },
+  { name: 'Carrot', type: 'Vegetables', status: 'Growing' },
+  { name: 'Banana', type: 'Fruits', status: 'Growing' },
+];
+export default function App() {
+  return <CropDashboard crops={initialCrops} />;
+}
+
+// src/Components/CropDashboard.jsx
+
+import React, { useState, useMemo } from 'react';
+import CropList from './CropList';
+export default function CropDashboard({ crops = [] }) {
+  const [query, setQuery] = useState('');
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return crops;
+    return crops.filter((c) => c.name.toLowerCase().includes(q));
+  }, [query, crops]);
+  return (
+    <div className="container py-5 d-flex justify-content-center">
+      <div className="card shadow-sm p-4" style={{ maxWidth: 720, width: '100%' }}>
+        <h2 className="fw-bold text-uppercase mb-2">Crop Management System</h2>
+        <hr className="border-2 border-success opacity-100 mt-0" />
+        <div className="mb-3">
+          <label className="form-label fw-semibold">Search by Crop Name</label>
+          <input
+            type="text"
+            className="form-control border-success"
+            placeholder="Search crops..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+        <CropList crops={filtered} />
+      </div>
+    </div>
+  );
+}
+
+// src/Components/CropList.jsx
+
+import React from 'react';
+export default function CropList({ crops = [] }) {
+  if (crops.length === 0) {
+    return <div className="text-muted">No crops found.</div>;
+  }
+  return (
+    <ul className="list-unstyled m-0">
+      {crops.map((c) => (
+        <li key={c.name} className="d-flex justify-content-between py-2 border-bottom">
+          <div className="d-flex align-items-center">
+            <span className="text-success me-2" aria-hidden="true">{'{'}</span>
+            <span className="fw-semibold">{c.name}</span>
+          </div>
+          <div className="text-muted small">
+            - Type: {c.type} - Status: {c.status}
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
