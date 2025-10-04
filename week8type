@@ -1,0 +1,61 @@
+import React from 'react';
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    const employees = [
+      'John Doe',
+      'Jane Smith',
+      'Mike Johnson',
+      'Emily Davis',
+      'James Brown',
+      'Jennifer Wilson',
+      'Paul Garcia',
+      'Laura Martinez',
+    ];
+    this.state = {
+      query: '',
+      employees,
+      filteredEmployees: employees,
+    };
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.query !== this.state.query) {
+      const q = this.state.query.toLowerCase();
+      const filtered = this.state.employees.filter((n) =>
+        n.toLowerCase().includes(q)
+      );
+      this.setState({ filteredEmployees: filtered });
+    }
+  }
+  handleSearch = (e) => {
+    this.setState({ query: e.target.value });
+  };
+  render() {
+    return (
+      <div className="container py-5">
+        <h1 className="text-center mb-4">Employee Directory</h1>
+        <div className="d-flex justify-content-center mb-3">
+          <input
+            type="text"
+            className="form-control w-50"
+            placeholder="Search employees..."
+            value={this.state.query}
+            onChange={this.handleSearch}
+          />
+        </div>
+        <ul className="list-unstyled d-flex flex-column align-items-center gap-2">
+          {this.state.filteredEmployees.map((name) => (
+            <li
+              key={name}
+              className="w-50 text-center py-2 border rounded bg-light"
+            >
+              {name}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+}
+export default App;
+
