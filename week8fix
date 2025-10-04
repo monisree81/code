@@ -1,0 +1,105 @@
+
+// src/components/Stopwatch.jsx
+
+import React from 'react';
+export default class Stopwatch extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      elapsedMs: 0,
+      isRunning: false,
+      laps: [],
+    };
+    this.intervalId = null;
+  }
+  componentWillUnmount() {
+    if (this.intervalId) clearInterval(this.intervalId);
+  }
+  // mm:ss.cs where cs = centiseconds
+  formatTime = (ms) => {
+    const totalCs = Math.floor(ms / 10);
+    const minutes = Math.floor(totalCs / 600);
+    const seconds = Math.floor((totalCs % 600) / 100);
+    const cs = totalCs % 100;
+    const mm = String(minutes).padStart(2, '0');
+    const ss = String(seconds).padStart(2, '0');
+    const cc = String(cs).padStart(2, '0');
+    return `${mm}:${ss}.${cc}`;
+  };
+  start = () => {
+    if (this.state.isRunning) return;
+    this.setState({ isRunning: true });
+    const startAt = performance.now() - this.state.elapsedMs;
+    this.intervalId = setInterval(() => {
+      const now = performance.now();
+      this.setState({ elapsedMs: now - startAt });
+    }, 10);
+  };
+  stop = () => {
+    if (!this.state.isRunning) return;
+    this.setState({ isRunning: false });
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+      this.intervalId = null;
+    }
+  };
+  reset = () => {
+    this.stop();
+    this.setState({ elapsedMs: 0, laps: [] });
+  };
+  addLap = () => {
+    if (!this.state.isRunning) return;
+    this.setState((prev) => ({ laps: [...prev.laps, prev.elapsedMs] }));
+  };
+  render() {
+    const { elapsedMs, isRunning, laps } = this.state;
+    return (
+      <div className="d-flex justify-content-center align-items-start py-5">
+        <div className="border rounded p-4 text-center" style={{ width: 320 }}>
+          <h3 className="mb-3">Stopwatch</h3>
+          <div className="display-6 mb-3" aria-label="time">
+            {this.formatTime(elapsedMs)}
+          </div>
+          <div className="d-flex gap-2 justify-content-center mb-3">
+            <button
+              className="btn btn-success"
+              onClick={this.start}
+              disabled={isRunning}
+            >
+              Start
+            </button>
+            <button
+              className="btn btn-danger"
+              onClick={this.stop}
+              disabled={!isRunning}
+            >
+              Stop
+            </button>
+            <button
+              className="btn btn-info text-white"
+              onClick={this.reset}
+              disabled={isRunning}
+            >
+              Reset
+            </button>
+          </div>
+          <button
+            className="btn btn-warning fw-semibold mb-3"
+            onClick={this.addLap}
+            disabled={!isRunning}
+          >
+            Add Lap
+          </button>
+          <ul className="list-unstyled m-0">
+            {laps.map((ms, idx) => (
+              <li key={idx} className="text-muted small">
+                {this.formatTime(ms)}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    );
+  }
+}
+
