@@ -1,0 +1,113 @@
+import React, { useState } from 'react';
+const MedicalShop = () => {
+const [inventory, setInventory] = useState([
+{ name: 'Paracetamol', quantity: 50, price: 0.5 },
+{ name: 'Aspirin', quantity: 30, price: 0.8 },
+{ name: 'Band-Aid', quantity: 100, price: 0.2 },
+]);
+const [formData, setFormData] = useState({
+name: '',
+quantity: '',
+price: '',
+});
+const [search, setSearch] = useState('');
+const handleChange = (e) => {
+const { placeholder, value } = e.target;
+setFormData((prev) => ({
+...prev,
+[placeholder.toLowerCase()]: value,
+}));
+};
+const handleAddMedicine = () => {
+const { name, quantity, price } = formData;
+if (!name || !quantity || !price) {
+alert('Please fill in all fields');
+return;
+}
+const newMedicine = { name, quantity, price };
+setInventory((prev) => [...prev, newMedicine]);
+setFormData({ name: '', quantity: '', price: '' }); // reset form
+};
+const filteredInventory = inventory.filter((item) =>
+item.name.toLowerCase().includes(search.toLowerCase())
+);
+return (
+<div className="container my-4">
+<h2 className="text-center mb-4">Medical Shop Inventory</h2>
+{/* Search */}
+<input
+type="text"
+placeholder="Search Medicine"
+className="form-control mb-3"
+value={search}
+onChange={(e) => setSearch(e.target.value)}
+/>
+{/* Form */}
+<div className="row mb-3">
+<div className="col-md-4">
+<input
+type="text"
+placeholder="Name"
+className="form-control mb-2"
+value={formData.name}
+onChange={handleChange}
+/>
+</div>
+<div className="col-md-4">
+<input
+type="number"
+placeholder="Quantity"
+className="form-control mb-2"
+
+value={formData.quantity}
+onChange={handleChange}
+/>
+</div>
+<div className="col-md-4">
+<input
+type="number"
+placeholder="Price"
+step="0.01"
+className="form-control mb-2"
+value={formData.price}
+onChange={handleChange}
+/>
+</div>
+</div>
+<button
+className="btn btn-success w-100 mb-4"
+onClick={handleAddMedicine}
+>
+Add Medicine
+</button>
+{/* Table */}
+<table className="table table-striped table-bordered">
+<thead className="table-dark">
+<tr>
+<th>Name</th>
+<th>Quantity</th>
+<th>Price</th>
+</tr>
+</thead>
+<tbody>
+{filteredInventory.length > 0 ? (
+filteredInventory.map((item, index) => (
+<tr key={index}>
+<td>{item.name}</td>
+<td>{item.quantity}</td>
+<td>{item.price}</td>
+</tr>
+))
+) : (
+<tr>
+<td colSpan="3" className="text-center">
+No medicines found
+</td>
+</tr>
+)}
+</tbody>
+</table>
+</div>
+);
+};
+export default MedicalShop;
