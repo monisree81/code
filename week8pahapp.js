@@ -5,7 +5,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     
-    // Properly initialize state
     this.state = {
       tasks: [
         { id: 1, title: 'Complete React Assignment', priority: 'High', completed: false, createdAt: Date.now() },
@@ -21,7 +20,6 @@ class App extends Component {
       newTaskPriority: 'Medium'
     };
 
-    // Properly bind all methods
     this.handleFilterChange = this.handleFilterChange.bind(this);
     this.handleTaskToggle = this.handleTaskToggle.bind(this);
     this.handleAddTask = this.handleAddTask.bind(this);
@@ -34,25 +32,20 @@ class App extends Component {
   componentDidMount() {
     console.log('Component mounted');
     
-    // Set mount time and simulate API call
     this.setState({ 
-      mountTime: Date.now(),
-      isLoading: false 
+      mountTime: Date.now()
     });
 
-    // Simulate loading delay
     this.loadingTimer = setTimeout(() => {
       this.setState({ isLoading: false });
     }, 2000);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // Track filter changes
     if (prevState.filter !== this.state.filter) {
       console.log(`Filter changed from ${prevState.filter} to ${this.state.filter}`);
     }
 
-    // Track tasks changes
     if (prevState.tasks.length !== this.state.tasks.length) {
       console.log(`Tasks count changed from ${prevState.tasks.length} to ${this.state.tasks.length}`);
     }
@@ -60,7 +53,6 @@ class App extends Component {
 
   componentWillUnmount() {
     console.log('Component will unmount');
-    // Cleanup timers
     if (this.loadingTimer) {
       clearTimeout(this.loadingTimer);
     }
@@ -159,14 +151,12 @@ class App extends Component {
     if (isLoading) {
       return (
         <div className="container-fluid">
-          {/* Bootstrap Navbar */}
           <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
             <div className="container">
               <span className="navbar-brand">Task Manager</span>
             </div>
           </nav>
           
-          {/* Loading Spinner */}
           <div className="container mt-5 d-flex justify-content-center">
             <div className="spinner-border text-primary" role="status">
               <span className="visually-hidden">Loading...</span>
@@ -178,7 +168,6 @@ class App extends Component {
 
     return (
       <div className="container-fluid">
-        {/* Bootstrap Navbar */}
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
           <div className="container">
             <span className="navbar-brand">Task Manager</span>
@@ -188,7 +177,6 @@ class App extends Component {
           </div>
         </nav>
 
-        {/* Filter Buttons */}
         <div className="container mt-4">
           <div className="row">
             <div className="col-12">
@@ -207,7 +195,6 @@ class App extends Component {
             </div>
           </div>
 
-          {/* Tasks List */}
           <div className="row mt-4">
             <div className="col-12">
               {filteredTasks.length === 0 ? (
@@ -219,16 +206,34 @@ class App extends Component {
                   <div key={task.id} className="card mb-3">
                     <div className="card-body">
                       <div className="d-flex justify-content-between align-items-center">
-                        <div>
-                          <h5 className="card-title">
-                            {task.title}
-                            {task.completed && (
-                              <span className="badge bg-success ms-2">Completed</span>
-                            )}
-                          </h5>
-                          <span className={`badge ${this.getPriorityBadgeClass(task.priority)}`}>
-                            {task.priority} Priority
-                          </span>
+                        <div className="d-flex align-items-center">
+                          <input
+                            type="checkbox"
+                            className="form-check-input me-3"
+                            checked={task.completed}
+                            onChange={() => this.handleTaskToggle(task.id)}
+                            id={`task-${task.id}`}
+                          />
+                          <div>
+                            <label 
+                              htmlFor={`task-${task.id}`}
+                              className="card-title mb-1"
+                              style={{ 
+                                cursor: 'pointer',
+                                textDecoration: task.completed ? 'line-through' : 'none'
+                              }}
+                            >
+                              {task.title}
+                            </label>
+                            <div>
+                              <span className={`badge ${this.getPriorityBadgeClass(task.priority)} me-2`}>
+                                {task.priority} Priority
+                              </span>
+                              {task.completed && (
+                                <span className="badge bg-success">Completed</span>
+                              )}
+                            </div>
+                          </div>
                         </div>
                         <div>
                           <button
@@ -252,7 +257,6 @@ class App extends Component {
             </div>
           </div>
 
-          {/* Add Task Button */}
           <div className="row mt-4">
             <div className="col-12">
               <button
@@ -265,7 +269,6 @@ class App extends Component {
           </div>
         </div>
 
-        {/* Bootstrap Modal */}
         {showModal && (
           <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
             <div className="modal-dialog">
@@ -326,7 +329,7 @@ class App extends Component {
                     className="btn btn-primary"
                     onClick={this.handleAddTask}
                   >
-                    Add New Task
+                    Add Task
                   </button>
                 </div>
               </div>
