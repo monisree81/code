@@ -206,36 +206,26 @@ class App extends Component {
                   <div key={task.id} className="card mb-3">
                     <div className="card-body">
                       <div className="d-flex justify-content-between align-items-center">
-                        <div className="d-flex align-items-center">
-                          <input
-                            type="checkbox"
-                            className="form-check-input me-3"
-                            checked={task.completed}
-                            onChange={() => this.handleTaskToggle(task.id)}
-                            id={`task-${task.id}`}
-                          />
-                          <div>
-                            <label 
-                              htmlFor={`task-${task.id}`}
-                              className="card-title mb-1"
-                              style={{ 
-                                cursor: 'pointer',
-                                textDecoration: task.completed ? 'line-through' : 'none'
-                              }}
-                            >
-                              {task.title}
-                            </label>
-                            <div>
-                              <span className={`badge ${this.getPriorityBadgeClass(task.priority)} me-2`}>
-                                {task.priority} Priority
-                              </span>
-                              {task.completed && (
-                                <span className="badge bg-success">Completed</span>
-                              )}
-                            </div>
-                          </div>
+                        <div>
+                          <h5 className="card-title">
+                            {task.title}
+                            {task.completed && (
+                              <span className="badge bg-success ms-2">Completed</span>
+                            )}
+                          </h5>
+                          <span className={`badge ${this.getPriorityBadgeClass(task.priority)}`}>
+                            {task.priority} Priority
+                          </span>
                         </div>
                         <div>
+                          {/* CHANGED: Added checkbox for task completion to match test expectations */}
+                          <input
+                            type="checkbox"
+                            className="form-check-input me-2"
+                            checked={task.completed}
+                            onChange={() => this.handleTaskToggle(task.id)}
+                            aria-label={task.title}
+                          />
                           <button
                             className={`btn btn-sm ${task.completed ? 'btn-warning' : 'btn-success'} me-2`}
                             onClick={() => this.handleTaskToggle(task.id)}
@@ -284,6 +274,7 @@ class App extends Component {
                 <div className="modal-body">
                   <div className="mb-3">
                     <label htmlFor="taskTitle" className="form-label">Task Title</label>
+                    {/* CHANGED: Updated placeholder to match test expectation */}
                     <input
                       type="text"
                       className="form-control"
@@ -291,29 +282,22 @@ class App extends Component {
                       name="newTaskTitle"
                       value={newTaskTitle}
                       onChange={this.handleInputChange}
-                      placeholder="Enter task title"
+                      placeholder="Enter task title..."
                     />
                   </div>
                   <div className="mb-3">
                     <label className="form-label">Priority</label>
-                    <div>
-                      {['High', 'Medium', 'Low'].map(priority => (
-                        <div key={priority} className="form-check form-check-inline">
-                          <input
-                            className="form-check-input"
-                            type="radio"
-                            name="newTaskPriority"
-                            id={`priority${priority}`}
-                            value={priority}
-                            checked={newTaskPriority === priority}
-                            onChange={this.handleInputChange}
-                          />
-                          <label className="form-check-label" htmlFor={`priority${priority}`}>
-                            {priority}
-                          </label>
-                        </div>
-                      ))}
-                    </div>
+                    {/* CHANGED: Replaced radio buttons with select to match test expectation */}
+                    <select 
+                      className="form-select"
+                      name="newTaskPriority"
+                      value={newTaskPriority}
+                      onChange={this.handleInputChange}
+                    >
+                      <option value="High">High</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Low">Low</option>
+                    </select>
                   </div>
                 </div>
                 <div className="modal-footer">
@@ -324,6 +308,7 @@ class App extends Component {
                   >
                     Cancel
                   </button>
+                  {/* CHANGED: Updated button text to match test expectation */}
                   <button
                     type="button"
                     className="btn btn-primary"
