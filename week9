@@ -1,4 +1,4 @@
-//CityFilter.js
+//CityFilter.jsx
 
 import React, { useEffect } from 'react';
 const CityFilter = ({ currentFilter, onFilterChange, addLog, renderCount }) => {
@@ -27,7 +27,7 @@ const CityFilter = ({ currentFilter, onFilterChange, addLog, renderCount }) => {
 
 export default CityFilter;
 
-//WeatherCard.js
+//WeatherCard.jsx
 
 
 import React, { useEffect } from 'react';
@@ -152,29 +152,29 @@ function App() {
 
 export default App;
 
-//LifecycleLogs.js
+//LifecycleLogs.jsx
 
-import React from &#39;react&#39;;
-const LifecycleLogs = ({ logs, CL }) =&gt; {
+import React from 'react';
+const LifecycleLogs = ({ logs, CL }) => {
 return (
-&lt;div style={{ marginTop: &#39;30px&#39; }}&gt;
-&lt;h2&gt;Lifecycle Logs&lt;/h2&gt;
-&lt;button onClick={CL}&gt;Clear Log&lt;/button&gt;
-&lt;div
+<div style={{ marginTop: '30px' }}>
+<h2>Lifecycle Logs</h2>
+<button onClick={CL}>Clear Log</button>
+<div
 style={{
-border: &#39;1px solid #ccc&#39;,
-marginTop: &#39;10px&#39;,
-padding: &#39;10px&#39;,
-minHeight: &#39;100px&#39;,
+border: '1px solid #ccc',
+marginTop: '10px',
+padding: '10px',
+minHeight: '100px',
 }}
-&gt;
+>
 {logs.length === 0 ? (
-&lt;p&gt;No logs yet&lt;/p&gt;
+<p>No logs yet</p>
 ) : (
-logs.map((l, ind) =&gt; &lt;p key={ind}&gt;{l}&lt;/p&gt;)
+logs.map((l, ind) =><p key={ind}>{l}</p>)
 )}
-&lt;/div&gt;
-&lt;/div&gt;
+</div>
+</div>
 );
 };
 
